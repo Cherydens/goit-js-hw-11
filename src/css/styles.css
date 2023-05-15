@@ -48,6 +48,10 @@ body {
   line-height: 1.5;
 }
 
+button.is-hidden {
+  display: none;
+}
+
 .search-form {
   position: fixed;
   left: 50%;

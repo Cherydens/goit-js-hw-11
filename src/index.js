@@ -36,6 +36,7 @@ function onSubmit(evt) {
       clearGallery();
       renderGallery(data.hits);
       pixabayApiService.incrementPage();
+      refs.loadMoreBtn.classList.remove('is-hidden');
     })
     .catch(error => Notify.failure(error.message));
 }
@@ -48,16 +49,11 @@ function onLoadMoreBtnClick(evt) {
         Notify.failure(
           "We're sorry, but you've reached the end of search results."
         );
+        refs.loadMoreBtn.classList.add('is-hidden');
         return;
       }
       renderGallery(data.hits);
-      const { height: cardHeight } = document
-        .querySelector('.gallery')
-        .firstElementChild.getBoundingClientRect();
-      window.scrollBy({
-        top: cardHeight * 2,
-        behavior: 'smooth',
-      });
+      smothScroll();
       pixabayApiService.incrementPage();
     })
     .catch(error => Notify.failure(error.message));
@@ -75,4 +71,14 @@ function renderGallery(images) {
     captionPosition: 'bottom',
     captionDelay: 250,
   }).refresh();
+}
+
+function smothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
