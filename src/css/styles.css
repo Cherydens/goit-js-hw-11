@@ -104,6 +104,13 @@ button.is-hidden {
 .info {
   display: flex;
   text-align: center;
+  justify-content: space-around;
+  gap: 5px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
 }
 
 .load-more {
