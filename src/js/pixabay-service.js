@@ -22,8 +22,12 @@ export default class PixabayApiService {
     };
     const url = 'https://pixabay.com/api/';
 
-    const response = await axios.get(url, { params });
-    return response.data;
+    try {
+      const response = await axios.get(url, { params });
+      return response.data;
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   get query() {

@@ -18,55 +18,55 @@ const pixabayApiService = new PixabayApiService();
 refs.searchForm.addEventListener('submit', onSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 
-function onSubmit(evt) {
+async function onSubmit(evt) {
   evt.preventDefault();
   pixabayApiService.query = evt.target.searchQuery.value.trim();
   pixabayApiService.resetPage();
+  refs.loadMoreBtn.classList.add('is-hidden');
   if (!pixabayApiService.query) {
     clearGallery();
-    refs.loadMoreBtn.classList.add('is-hidden');
     return;
   }
-  pixabayApiService
-    .fetchImages()
-    .then(data => {
-      const totalHits = data.totalHits;
-      if (totalHits === 0) {
-        Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-        return;
-      }
-      Notify.success(`Hooray! We found ${totalHits} images.`);
-      pixabayApiService.maxPage = Math.ceil(
-        totalHits / pixabayApiService.per_page
+  try {
+    const data = await pixabayApiService.fetchImages();
+    const totalHits = await data.totalHits;
+    if (totalHits === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
       );
-      clearGallery();
-      renderGallery(data.hits);
-      pixabayApiService.incrementPage();
-      if (pixabayApiService.maxPage !== 1) {
-        refs.loadMoreBtn.classList.remove('is-hidden');
-      }
-    })
-    .catch(error => Notify.failure(error.message));
+      return;
+    }
+    Notify.success(`Hooray! We found ${totalHits} images.`);
+    pixabayApiService.maxPage = Math.ceil(
+      totalHits / pixabayApiService.per_page
+    );
+    clearGallery();
+    renderGallery(data.hits);
+    pixabayApiService.incrementPage();
+    if (pixabayApiService.maxPage > 1) {
+      refs.loadMoreBtn.classList.remove('is-hidden');
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
 }
 
-function onLoadMoreBtnClick(evt) {
-  pixabayApiService
-    .fetchImages()
-    .then(data => {
-      renderGallery(data.hits);
-      smothScroll();
-      if (pixabayApiService.maxPage === pixabayApiService.page) {
-        Notify.failure(
-          "We're sorry, but you've reached the end of search results."
-        );
-        refs.loadMoreBtn.classList.add('is-hidden');
-        return;
-      }
-      pixabayApiService.incrementPage();
-    })
-    .catch(error => Notify.failure(error.message));
+async function onLoadMoreBtnClick(evt) {
+  try {
+    const data = await pixabayApiService.fetchImages();
+    renderGallery(data.hits);
+    smothScroll();
+    if (pixabayApiService.maxPage === pixabayApiService.page) {
+      Notify.warning(
+        "We're sorry, but you've reached the end of search results."
+      );
+      refs.loadMoreBtn.classList.add('is-hidden');
+      return;
+    }
+    pixabayApiService.incrementPage();
+  } catch (error) {
+    console.error(error.message);
+  }
 }
 
 function clearGallery() {
