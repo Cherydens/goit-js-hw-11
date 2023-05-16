@@ -33,10 +33,15 @@ function onSubmit(evt) {
         return;
       }
       Notify.success(`Hooray! We found ${totalHits} images.`);
+      pixabayApiService.maxPage = Math.ceil(
+        totalHits / pixabayApiService.per_page
+      );
       clearGallery();
       renderGallery(data.hits);
       pixabayApiService.incrementPage();
-      refs.loadMoreBtn.classList.remove('is-hidden');
+      if (pixabayApiService.maxPage !== 1) {
+        refs.loadMoreBtn.classList.remove('is-hidden');
+      }
     })
     .catch(error => Notify.failure(error.message));
 }
@@ -45,15 +50,15 @@ function onLoadMoreBtnClick(evt) {
   pixabayApiService
     .fetchImages()
     .then(data => {
-      if (data.hits.length === 0) {
+      renderGallery(data.hits);
+      smothScroll();
+      if (pixabayApiService.maxPage === pixabayApiService.page) {
         Notify.failure(
           "We're sorry, but you've reached the end of search results."
         );
         refs.loadMoreBtn.classList.add('is-hidden');
         return;
       }
-      renderGallery(data.hits);
-      smothScroll();
       pixabayApiService.incrementPage();
     })
     .catch(error => Notify.failure(error.message));

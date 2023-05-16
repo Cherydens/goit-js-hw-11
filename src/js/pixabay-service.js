@@ -6,6 +6,8 @@ export default class PixabayApiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
+    this.max_Page = 1;
+    this.per_page = 40;
   }
 
   async fetchImages() {
@@ -16,7 +18,7 @@ export default class PixabayApiService {
       orientation: 'horizontal',
       safesearch: true,
       page: this.page,
-      per_page: 40,
+      per_page: this.per_page,
     };
     const url = 'https://pixabay.com/api/';
 
@@ -30,6 +32,14 @@ export default class PixabayApiService {
 
   set query(newQuery) {
     this.searchQuery = newQuery;
+  }
+
+  get maxPage() {
+    return this.max_Page;
+  }
+
+  set maxPage(newMaxPage) {
+    this.max_Page = newMaxPage;
   }
 
   incrementPage() {

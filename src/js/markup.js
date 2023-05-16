@@ -1,4 +1,8 @@
-// Шаблон розмітки картки одного зображення для галереї.
+/**
+ * Make gallery markup
+ * @param {Array} images
+ * @returns Create gallery
+ */
 export default function markupGallery(images) {
   return images
     .map(
