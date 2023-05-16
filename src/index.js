@@ -42,10 +42,10 @@ async function onSubmit(evt) {
     );
     clearGallery();
     renderGallery(data.hits);
-    pixabayApiService.incrementPage();
     if (pixabayApiService.maxPage > 1) {
       refs.loadMoreBtn.classList.remove('is-hidden');
     }
+    pixabayApiService.incrementPage();
   } catch (error) {
     console.error(error.message);
   }
