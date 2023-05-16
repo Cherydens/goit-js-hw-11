@@ -22,6 +22,11 @@ function onSubmit(evt) {
   evt.preventDefault();
   pixabayApiService.query = evt.target.searchQuery.value.trim();
   pixabayApiService.resetPage();
+  if (!pixabayApiService.query) {
+    clearGallery();
+    refs.loadMoreBtn.classList.add('is-hidden');
+    return;
+  }
   pixabayApiService
     .fetchImages()
     .then(data => {
