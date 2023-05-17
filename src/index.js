@@ -31,6 +31,7 @@ async function onSubmit(evt) {
     const data = await pixabayApiService.fetchImages();
     const totalHits = await data.totalHits;
     if (totalHits === 0) {
+      clearGallery();
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
